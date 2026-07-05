@@ -1,0 +1,97 @@
+# 气象API配置
+weather_api:
+  # Open-Meteo（免费，无需API Key，全球覆盖）
+  open_meteo:
+    base_url: "https://api.open-meteo.com/v1"
+    geocoding_url: "https://geocoding-api.open-meteo.com/v1"
+    # 免费额度：无限制（合理使用）
+    # 支持：逐小时预报、实时天气、历史数据
+  
+  # weather.gov（美国区域详细数据）
+  weather_gov:
+    base_url: "https://api.weather.gov"
+    # 仅限美国区域，需要User-Agent
+    user_agent: "(DroneWeatherAssistant, contact@example.com)"
+
+# 无人机飞行气象规则（行业标准）
+flight_rules:
+  # 风速限制（m/s，根据蒲福风级）
+  wind:
+    # 消费级无人机限制
+    consumer:
+      max_speed: 10.8       # 5级风上限
+      max_gust: 13.9        # 6级风上限
+      safe_speed: 8.0       # 4级风上限（推荐安全值）
+    # 行业级无人机限制
+    industrial:
+      max_speed: 15.0       # 7级风上限
+      max_gust: 17.2        # 7级风上限
+      safe_speed: 10.8      # 5级风上限
+  
+  # 能见度要求（km）
+  visibility:
+    minimum: 1.0            # 最低能见度（VLOS视距内飞行）
+    good: 3.0               # 良好能见度
+    excellent: 5.0          # 优秀能见度
+  
+  # 降水限制
+  precipitation:
+    max_intensity: 0.1      # 最大降水强度（mm/h）
+    # 无人机不能在雨中飞行
+  
+  # 温度范围（℃）
+  temperature:
+    min: -10.0              # 最低温度（电池性能急剧下降）
+    max: 45.0               # 最高温度（电子元件过热）
+    optimal_min: 5.0        # 最佳温度下限
+    optimal_max: 35.0       # 最佳温度上限
+  
+  # 湿度限制（%）
+  humidity:
+    max: 90.0               # 最大湿度（结露风险）
+    warning: 80.0           # 警告湿度
+  
+  # 云底高度（m AGL）
+  cloud_ceiling:
+    minimum: 150.0          # 最低云底高度
+    good: 300.0             # 良好云底高度
+  
+  # 禁止飞行的天气现象
+  prohibited_weather:
+    - "Thunderstorm"
+    - "Heavy rain"
+    - "Heavy snow"
+    - "Hail"
+    - "Tornado"
+    - "Sandstorm"
+    - "Fog"                  # 能见度<1km
+  
+  # 无人机类型配置
+  drone_types:
+    consumer:
+      name: "消费级无人机"
+      max_altitude: 120     # 最大飞行高度（m）
+      max_wind: 10.8        # 最大抗风等级（m/s）
+      max_range: 5          # 最大飞行距离（km）
+    industrial:
+      name: "行业级无人机"
+      max_altitude: 500
+      max_wind: 15.0
+      max_range: 30
+
+# LLM配置（用于生成研判报告）
+llm:
+  provider: "ollama"        # ollama / openai / mock
+  model_name: "qwen2.5:7b"
+  temperature: 0.3
+  max_tokens: 1500
+  base_url: "http://localhost:11434"
+
+# 后端配置
+server:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins:
+    - "http://localhost:5173"   # Vite开发服务器
+    - "http://localhost:3000"
+    - "http://127.0.0.1:5173"
