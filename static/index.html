@@ -198,26 +198,31 @@
         <!-- 预报数据表 -->
         <div v-if="result.raw_forecast && result.raw_forecast.length" class="forecast-section">
           <h3>📈 完整预报数据（{{ result.raw_forecast.length }}小时）</h3>
-          <el-table :data="result.raw_forecast" stripe size="small" max-height="400">
-            <el-table-column label="时间" width="140">
-              <template #default="{ row }">{{ formatForecastTime(row.time) }}</template>
-            </el-table-column>
-            <el-table-column label="天气" prop="weather_text" width="100" />
-            <el-table-column label="温度(℃)" prop="temperature" width="90" />
-            <el-table-column label="湿度(%)" prop="humidity" width="85" />
-            <el-table-column label="风速(m/s)" width="100">
-              <template #default="{ row }">
-                <span :style="{ color: row.wind_speed > 8 ? '#ef4444' : row.wind_speed > 5 ? '#eab308' : '#22c55e' }">
-                  {{ row.wind_speed }}
-                </span>
-              </template>
-            </el-table-column>
-            <el-table-column label="阵风(m/s)" prop="wind_gust" width="100" />
-            <el-table-column label="风向" prop="wind_direction_text" width="70" />
-            <el-table-column label="能见度(km)" prop="visibility" width="100" />
-            <el-table-column label="降水(mm)" prop="precipitation" width="90" />
-            <el-table-column label="云量(%)" prop="cloud_cover" width="80" />
-          </el-table>
+          <div class="table-wrapper">
+            <table class="forecast-table">
+              <thead>
+                <tr>
+                  <th>时间</th><th>天气</th><th>温度(℃)</th><th>湿度(%)</th>
+                  <th>风速(m/s)</th><th>阵风(m/s)</th><th>风向</th>
+                  <th>能见度(km)</th><th>降水(mm)</th><th>云量(%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, idx) in result.raw_forecast" :key="idx">
+                  <td>{{ formatForecastTime(row.time) }}</td>
+                  <td>{{ row.weather_text }}</td>
+                  <td>{{ row.temperature }}</td>
+                  <td>{{ row.humidity }}</td>
+                  <td :style="{ color: row.wind_speed > 8 ? '#ef4444' : row.wind_speed > 5 ? '#eab308' : '#22c55e', fontWeight: 600 }">{{ row.wind_speed }}</td>
+                  <td>{{ row.wind_gust }}</td>
+                  <td>{{ row.wind_direction_text }}</td>
+                  <td>{{ row.visibility }}</td>
+                  <td>{{ row.precipitation }}</td>
+                  <td>{{ row.cloud_cover }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
